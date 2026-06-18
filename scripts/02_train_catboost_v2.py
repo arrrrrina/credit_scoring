@@ -241,6 +241,15 @@ def main():
     log(f"fitting v2 final model iterations={final_iterations}")
     final_model = fit_model(X_train, y, iterations=final_iterations)
 
+    model_dir = Path("artifacts/models")
+    model_dir.mkdir(parents=True, exist_ok=True)
+
+    final_model.save_model(
+        str(model_dir / "catboost_v2_final.cbm"),
+        format="cbm",
+    )
+    log("saved artifacts/models/catboost_v2_final.cbm")
+
     test_shape = aggregate_to_memmap(TEST_PATH, test_ids, "test-v2", Path("artifacts/test_v2.dat"))
     n_test, n_features_test, _ = test_shape
     X_test = np.memmap("artifacts/test_v2.dat", dtype=np.float32, mode="r", shape=(n_test, n_features_test))

@@ -290,6 +290,28 @@ def main():
     final_epochs = max(random_epoch, 3)
     log(f"training final model on all train for {final_epochs} epochs")
     final_model = train_final(final_epochs, y, train_x, train_len, max_values, dev)
+
+    FINAL_CKPT_PATH = SEQ_DIR / "sequence_concat_final.pt"
+
+    torch.save(
+        {
+            "model": final_model.state_dict(),
+            "max_values": max_values,
+            "epochs": final_epochs,
+            "max_len": MAX_LEN,
+            "n_features": N_FEATURES,
+            "architecture": {
+                "emb_dim": 3,
+                "projection_dim": 96,
+                "hidden": 64,
+                "dropout": 0.15,
+            },
+        },
+        FINAL_CKPT_PATH,
+    )
+
+    log(f"saved final model: {FINAL_CKPT_PATH}")
+
     test_idx = np.arange(len(sample))
     raw = predict(final_model, test_x, test_len, test_idx, dev)
     raw_out = pd.DataFrame({"id": sample["id"].to_numpy(), "flag": np.round(np.clip(raw, 0, 1), 6)})

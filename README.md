@@ -3,11 +3,6 @@
 Проект решает задачу бинарной классификации: по кредитной истории
 клиента нужно оценить вероятность дефолта.
 
-Целевая переменная `flag`:
-
-- `0` — дефолта нет;
-- `1` — дефолт произошёл.
-
 У каждого клиента может быть до 58 записей истории. Каждая запись содержит
 60 закодированных признаков, включая `rn` — порядковый номер записи.
 
@@ -21,6 +16,7 @@
 credit_scoring/
 ├── data/                         # исходные данные
 ├── artifacts/                    # промежуточные массивы и checkpoints
+├── model_weights/                # готовые веса обученных моделей
 ├── submissions/                  # прогнозы моделей
 ├── scripts/
 │   ├── 01_prepare_sequences.py   # parquet -> последовательности для GRU
@@ -47,11 +43,7 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-После активации окружения команда `python` должна быть доступна:
-
-```bash
-python --version
-```
+Важен именно `python3.12`, так как для более высоких версий возникали проблемы со сборкой `pyarrow`
 
 ## Исходные данные
 
@@ -156,6 +148,21 @@ artifacts/
 Файлы `.dat` читаются через `numpy.memmap`: в оперативную память загружается только нужная
 часть массива.
 
+## Готовые веса моделей
+
+Веса уже обученных моделей лежат в папке `model_weights/`:
+
+```text
+model_weights/
+├── catboost_v2.cbm   # CatBoost v2
+├── legacy_gru.pt           # Legacy GRU
+├── catboost_row.cbm        # Row catboost
+└── gru_concat_best.pt      # ConcatGRU
+```
+
+Это отдельные готовые веса. Текущий `run_best.sh` не загружает их автоматически, а заново
+обучает модели и сохраняет рабочие checkpoints в `artifacts/`.
+
 ## Модели
 
 ### CatBoost v2
@@ -257,4 +264,3 @@ submissions/submission.csv
 | `submission_nn_concat_calibrated.csv` | ConcatGRU с ранговой калибровкой |
 | `submission_row_blend.csv` | Row-level CatBoost |
 | `submission.csv` | итоговый ансамбль |
-

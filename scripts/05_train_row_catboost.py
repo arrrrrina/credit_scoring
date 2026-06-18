@@ -215,8 +215,15 @@ def main():
     )
     log("fitting final row model")
     final_model = fit_row_model(X_final, y_final, iterations=650, seed=RANDOM_STATE + 1)
-    del X_final, y_final
-    gc.collect()
+    model_dir = Path("artifacts/models")
+    model_dir.mkdir(parents=True, exist_ok=True)
+
+    final_model.save_model(
+        str(model_dir / "catboost_row_final.cbm"),
+        format="cbm",
+    )
+
+    log("saved artifacts/models/catboost_row_final.cbm")
 
     sample = pd.read_csv(SAMPLE_PATH)
     test_ids = sample["id"].to_numpy(np.int64)
