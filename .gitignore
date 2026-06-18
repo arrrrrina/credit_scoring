@@ -1,0 +1,11 @@
+.DS_Store
+.venv/
+__pycache__/
+*.py[cod]
+data/*.csv
+data/*.parquet
+artifacts/*
+!artifacts/.gitkeep
+submissions/*
+!submissions/.gitkeep
+

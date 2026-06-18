@@ -1,0 +1,7 @@
+numpy>=1.26,<3
+pandas>=2.2,<3
+pyarrow>=16,<20
+scikit-learn>=1.4,<2
+catboost>=1.2,<2
+torch>=2.2,<3
+
